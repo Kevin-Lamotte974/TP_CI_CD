@@ -50,7 +50,7 @@ jobs:
 
       - name: Merge dev into main
         run: |
-          git pull origin main
+          git checkout main
           git merge origin/dev --no-ff --allow-unrelated-histories
 
       - name: Push changes to main
