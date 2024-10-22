@@ -46,7 +46,7 @@ jobs:
       - name: Merge dev into main
         run: |
           git fetch
-          git checkout main
+          git pull origin main --allow-unrelated-histories
           git merge dev
 
       - name: Push changes to main
