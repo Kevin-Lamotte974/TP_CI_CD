@@ -27,20 +27,20 @@ jobs:
       - name: Run tests
         run: npm test
 
-deploy: 
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+  deploy: 
+      runs-on: ubuntu-latest
+      needs: test
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v3
 
-      - name: Login to Heroku
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: |
-          echo "machine api.heroku.com login=$HEROKU_EMAIL password=$HEROKU_API_KEY" > ~/.netrc
-          echo "machine git.heroku.com login=$HEROKU_EMAIL password=$HEROKU_API_KEY" >> ~/.netrc
-          heroku git:remote -a <nom_de_ton_app_heroku>
+        - name: Login to Heroku
+          env:
+            HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          run: |
+            echo "machine api.heroku.com login=$HEROKU_EMAIL password=$HEROKU_API_KEY" > ~/.netrc
+            echo "machine git.heroku.com login=$HEROKU_EMAIL password=$HEROKU_API_KEY" >> ~/.netrc
+            heroku git:remote -a <nom_de_ton_app_heroku>
 
-      - name: Deploy to Heroku
-        run: git push heroku main
+        - name: Deploy to Heroku
+          run: git push heroku main
