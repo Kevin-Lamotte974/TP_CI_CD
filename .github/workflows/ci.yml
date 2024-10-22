@@ -48,7 +48,7 @@ jobs:
         run: |
           git fetch
           git pull origin main --allow-unrelated-histories
-          git merge dev -no-ff
+          git merge dev -no-ff || git merge --strategy-option theirs
 
       - name: Push changes to main
         run: |
