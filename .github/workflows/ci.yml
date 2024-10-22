@@ -45,6 +45,7 @@ jobs:
 
       - name: Merge dev into main
         run: |
+          git fetch
           git checkout main
           git merge dev
 
