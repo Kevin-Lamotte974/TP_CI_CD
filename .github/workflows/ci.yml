@@ -50,9 +50,14 @@ jobs:
         run: |
           git fetch --all
           git checkout main
-          git merge origin/dev --no-ff --allow-unrelated-histories
+          git merge origin/dev --no-ff --allow-unrelated-histories || echo "Merge conflicts detected. Please resolve them manually."
+
+      - name: Fail the job if there are conflicts
+        if: failure() 
+        run: exit 1
 
       - name: Push changes to main
+        if: success()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
