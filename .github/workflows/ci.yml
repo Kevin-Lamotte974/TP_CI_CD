@@ -1,0 +1,70 @@
+name: TP_CI_CD Sum
+
+on:
+  push:
+    branches:
+      - newdev
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+  merge:
+    runs-on: ubuntu-latest
+    needs: test
+    if: success()
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name 'Kevin-Lamotte974'
+          git config user.email 'kevinlamotte974@gmail.com'
+
+      - name: Merge newdev into main
+        run: |
+          git checkout main
+          git pull origin main
+          git merge origin/newdev --no-ff
+          git push origin main
+
+  # deploy: 
+  #     runs-on: ubuntu-latest
+  #     needs: test
+  #     steps:
+  #       - name: Checkout repository
+  #         uses: actions/checkout@v3
+
+  #       - name: Login to Heroku
+  #         env:
+  #           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+  #         run: |
+  #           echo "machine api.heroku.com login=$HEROKU_EMAIL password=$HEROKU_API_KEY" > ~/.netrc
+  #           echo "machine git.heroku.com login=$HEROKU_EMAIL password=$HEROKU_API_KEY" >> ~/.netrc
+  #           heroku git:remote -a <nom_de_ton_app_heroku>
+
+  #       - name: Deploy to Heroku
+  #         run: git push heroku main
