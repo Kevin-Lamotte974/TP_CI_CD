@@ -19,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '20'
 
       - name: Install dependencies
         run: npm install
@@ -33,26 +33,23 @@ jobs:
     if: success()
 
     steps:
-      - name: Checkout main branch
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Configure git
         run: |
           git config user.name 'Kevin-Lamotte974'
           git config user.email 'kevinlamotte974@gmail.com'
-          
-      - name: Fetch all branches
-        run: git fetch --all 
 
-      - name: Merge dev into main
+      - name: Merge newdev into main
         run: |
           git checkout main
-          git merge origin/dev --no-ff --allow-unrelated-histories #ok
-
-      - name: Push changes to main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: git push origin main
+          git pull origin main
+          git merge origin/newdev --no-ff
+          git push origin main
 
   # deploy: 
   #     runs-on: ubuntu-latest
